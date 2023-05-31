@@ -1,11 +1,14 @@
-// REQUIREMENTS
+// ---------------> REQUIREMENTS
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const fs = require('fs');
 
-// SERVER SETUP
+// ---------------> SERVER SETUP
+// express setup
 const app = express();
+
+// socket setup
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
@@ -13,12 +16,25 @@ const io = new Server(server, {
   },
 });
 
-// ROUTES
+// ---------------> MIDDLEWARES
+// custom logger
+app.use((req, res, next) => {
+  console.log(req.ip, req.method, req.url);
+  next();
+});
+
+// ---------------> ROUTES
+// home route
 app.get('/', (req, res) => {
   res.send('Hello!');
 });
 
-// SOCKET EVENTS
+// catch all route
+app.use((req, res) => {
+  res.send('Not found');
+});
+
+// ---------------> SOCKET EVENTS
 io.on('connection', (socket) => {
   console.log('a user connected');
 
@@ -41,7 +57,7 @@ io.on('connection', (socket) => {
   });
 });
 
-// LISTENER
+// ---------------> LISTENER
 server.listen(3000, () => {
   console.log('listening on *:3000');
 });
