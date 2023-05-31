@@ -1,8 +1,10 @@
+// REQUIREMENTS
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const fs = require('fs');
 
+// SERVER SETUP
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -11,6 +13,12 @@ const io = new Server(server, {
   },
 });
 
+// ROUTES
+app.get('/', (req, res) => {
+  res.send('Hello!');
+});
+
+// SOCKET EVENTS
 io.on('connection', (socket) => {
   console.log('a user connected');
 
@@ -33,6 +41,7 @@ io.on('connection', (socket) => {
   });
 });
 
+// LISTENER
 server.listen(3000, () => {
   console.log('listening on *:3000');
 });
